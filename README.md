@@ -2,9 +2,15 @@
 
 A Rails engine for quickly adding SMS authentication to a Rails API.
 
+## What does this do?
+
+It will let a user on your app authenticate with only their phone number. It'll provide them an authentication token that will be enforced on protected routes (described below). It will also provide user context on the protected routes.
+
+This gem currently only supports PostgreSQL and creates 3 tables: `phone_verifications`, `authentication_tokens`, and `users` (it will skip this one if the table already exists)
+
 ## Why use this?
 
-This was originally built to support SMS authentication for a mobile application. It was later extracted into this engine so that it could be used easily for future apis. If you are interested in adding this type of authentication to your app, this should get you up and running in a few minutes without the need to use a Warden based solution.
+This was originally built to support SMS authentication for an API used for a mobile application. If you are interested in adding this type of authentication to your API, this should get you up and running in a few minutes without the need to use a Warden based solution.
 
 ## Installation
 
@@ -47,7 +53,7 @@ Rails.application.routes.draw do
 end
 ```
 
-### Update your controllers/application_controller to use the Auth Helper provided
+### Update your controllers/application_controller to use the Auth Controller Helper provided
 
 ```
 class ApplicationController < ActionController::Base
@@ -55,3 +61,15 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 end
 ```
+
+### If you have a specific controller that you want to be protected with authentication, use a before_filter
+
+The `authenticate_with_token!` filter can be used on all controller methods or can be excluded to only specific ones.
+
+```
+class ExampleController < ApplicationController
+  before_action :authenticate_with_token!
+  respond_to :json
+end
+```
+For authenticated controllers, the `current_user` and `current_token` objects are defined to allow you to use that information in your endpoints.
