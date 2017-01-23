@@ -35,7 +35,7 @@ class RegistrationService
 
   def verify_user
     verification = PhoneVerification.find_by_phone_number(phone_number)
-    unless verification_valid?(verification)
+    if verification_invalid?(verification)
       return verification_error(verification)
     end
 
@@ -63,18 +63,18 @@ class RegistrationService
     AuthenticationToken.create(user_id: user_id)
   end
 
-  def verification_valid?(verification)
+  def verification_invalid?(verification)
     verification.nil? || verification.locked? || verification.expired?
   end
 
   def token_matches?(verification)
-    verification.verification_token != verification_token
+    verification.verification_token == verification_token
   end
 
   def verification_error(verification)
-    error_message = 'The information provided does not match. Please try again.'
-
-    if verification.locked?
+    if verification.nil?
+      error_message = 'The information provided does not match. Please try again.'
+    elsif verification.locked?
       error_message = "Login attempts have been locked for this phone number. Try again in #{verification.unlocks_in_minutes} minutes."
     elsif verification.expired?
       error_message = 'The verification token used is expired. Please request a new one and try again.'
