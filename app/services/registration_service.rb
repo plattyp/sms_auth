@@ -35,18 +35,14 @@ class RegistrationService
 
   def verify_user
     verification = PhoneVerification.find_by_phone_number(phone_number)
-    if verification.nil?
-      return [false, 'The information provided does not match. Please try again.', nil, nil, false]
+    if verification_invalid?(verification)
+      return verification_error(verification)
     end
-
-    return [false, "Login attempts have been locked for this phone number. Try again in #{verification.unlocks_in_minutes} minutes."] if verification.locked?
-    return [false, 'The verification token used is expired. Please request a new one and try again.'] if verification.expired?
 
     # Determine if this is the correct token
     # If it is not then log the attempt
-    if verification.verification_token != verification_token
-      verification.login_attempts.push(Time.zone.now.utc)
-      verification.save!
+    unless token_matches(verification)
+      append_login_attempt(verification)
       if verification.above_maximum_attempts?
         verification.lock_account
         return [false, 'This phone number has been temporarily locked due to unsuccessful login attempts. Please try again in a few minutes.']
@@ -55,12 +51,7 @@ class RegistrationService
     end
 
     # If a user doesnt exist, create one, associate it with the verification, and set verified_at
-    unless verification.has_user?
-      user = User.create
-      verification.user_id = user.id
-      verification.verified_at = Time.zone.now.utc
-      verification.save!
-    end
+    user = create_and_verify_user(verification) unless verification.has_user?
 
     token = create_authentication_token(verification.user_id || user.id)
     verification.reset_verification_token
@@ -70,6 +61,39 @@ class RegistrationService
 
   def create_authentication_token(user_id)
     AuthenticationToken.create(user_id: user_id)
+  end
+
+  def verification_invalid?(verification)
+    verification.nil? || verification.locked? || verification.expired?
+  end
+
+  def token_matches?(verification)
+    verification.verification_token == verification_token
+  end
+
+  def verification_error(verification)
+    if verification.nil?
+      error_message = 'The information provided does not match. Please try again.'
+    elsif verification.locked?
+      error_message = "Login attempts have been locked for this phone number. Try again in #{verification.unlocks_in_minutes} minutes."
+    elsif verification.expired?
+      error_message = 'The verification token used is expired. Please request a new one and try again.'
+    end
+
+    [false, error_message, nil, nil, false]
+  end
+
+  def append_login_attempt(verification)
+    verification.login_attempts.push(Time.zone.now.utc)
+    verification.save!
+  end
+
+  def create_and_verify_user(verification)
+    user = User.create
+    verification.user_id = user.id
+    verification.verified_at = Time.zone.now.utc
+    verification.save!
+    user
   end
 
   private
