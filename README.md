@@ -34,7 +34,7 @@ This was originally built to support SMS authentication for an API used for a mo
 
 Create an initializer called `config/initializers/sms_auth.rb` and set it up with your [Twilio](https://www.twilio.com) account information
 
-```
+```ruby
 require 'sms_auth'
 
 SmsAuth::Engine.setup do |config|
@@ -47,7 +47,7 @@ end
 
 ### Mount the Engine in your config/routes, add it at the top
 
-```
+```ruby
 Rails.application.routes.draw do
   mount SmsAuth::Engine => '/', as: 'auth'
 end
@@ -55,7 +55,7 @@ end
 
 ### Update your controllers/application_controller to use the Auth Controller Helper provided
 
-```
+```ruby
 class ApplicationController < ActionController::Base
   include SmsAuth::Engine::AuthControllerHelper
   protect_from_forgery with: :null_session
@@ -66,7 +66,7 @@ end
 
 The `authenticate_with_token!` filter can be used on all controller methods or can be excluded to only specific ones.
 
-```
+```ruby
 class ExampleController < ApplicationController
   before_action :authenticate_with_token!
   respond_to :json
