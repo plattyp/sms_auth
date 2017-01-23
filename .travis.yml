@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+  - 2.3.0
+addons:
+  code_climate:
+    repo_token: 39d95ddb7d8450e0ed50b896052d3055831aab1703f69dcb45a87cbb423b495c
+before_script:
+  - psql -c "CREATE USER admin WITH PASSWORD 'admin';" -U postgres
+  - psql -c "ALTER USER admin CREATEDB;" -U postgres
+  - bin/rake db:create db:migrate RAILS_ENV=test
+script:
+  - bundle exec rspec

@@ -1,0 +1,26 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  template: template0
+
+dev&test: &devtest
+  <<: *default
+  host: localhost
+  port: 5432
+  pool: 5
+
+development:
+  <<: *devtest
+  database: sms_auth_development
+  username: admin
+  password: admin
+
+test:
+  <<: *devtest
+  database: sms_auth_test
+  username: admin
+  password: admin
+
+production:
+  <<: *default
+  database: sms_auth_production

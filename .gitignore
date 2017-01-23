@@ -1,0 +1,8 @@
+.bundle/
+log/*.log
+pkg/
+coverage/
+spec/test_app/log/*.log
+spec/test_app/tmp/
+spec/test_app/.sass-cache
+spec/test_app/initializers/sms_auth
