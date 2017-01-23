@@ -1,4 +1,4 @@
-# SMS Auth [![Code Climate](https://codeclimate.com/github/plattyp/sms_auth/badges/gpa.svg)](https://codeclimate.com/github/plattyp/sms_auth)
+# SMS Auth [![Build Status](https://travis-ci.org/plattyp/sms_auth.svg?branch=master)](https://travis-ci.org/plattyp/sms_auth) [![Code Climate](https://codeclimate.com/github/plattyp/sms_auth/badges/gpa.svg)](https://codeclimate.com/github/plattyp/sms_auth)
 
 A Rails engine for quickly adding SMS authentication to a Rails API.
 
