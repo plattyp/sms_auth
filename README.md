@@ -73,3 +73,7 @@ class ExampleController < ApplicationController
 end
 ```
 For authenticated controllers, the `current_user` and `current_token` objects are defined to allow you to use that information in your endpoints.
+
+## Configurable Options
+
+More info coming soon
