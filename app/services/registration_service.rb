@@ -41,7 +41,7 @@ class RegistrationService
 
     # Determine if this is the correct token
     # If it is not then log the attempt
-    unless token_matches(verification)
+    unless token_matches?(verification)
       append_login_attempt(verification)
       if verification.above_maximum_attempts?
         verification.lock_account
