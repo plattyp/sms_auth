@@ -7,6 +7,6 @@ addons:
 before_script:
   - psql -c "CREATE USER admin WITH PASSWORD 'admin';" -U postgres
   - psql -c "ALTER USER admin CREATEDB;" -U postgres
-  - bin/rake db:create db:migrate RAILS_ENV=test
+  - rake db:create db:migrate RAILS_ENV=test
 script:
   - bundle exec rspec
