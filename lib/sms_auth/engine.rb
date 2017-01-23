@@ -1,3 +1,5 @@
+require 'twilio-ruby'
+
 module SmsAuth
   class Engine < ::Rails::Engine
     engine_name 'sms_auth'
