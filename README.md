@@ -4,7 +4,7 @@ A Rails engine for quickly adding SMS authentication to a Rails API.
 
 ## Why use this?
 
-This was originally built to support SMS authentication for a mobile application. It was later abstracted into this engine so that it could be used easily for future apis. If you are interested in adding this type of authentication to your app, this should get you up and running in a few minutes without the need to use a Warden based solution.
+This was originally built to support SMS authentication for a mobile application. It was later extracted into this engine so that it could be used easily for future apis. If you are interested in adding this type of authentication to your app, this should get you up and running in a few minutes without the need to use a Warden based solution.
 
 ## Installation
 
