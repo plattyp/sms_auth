@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.version     = SmsAuth::VERSION
   s.authors     = ['Andrew Platkin']
   s.email       = ['andrew.platkin@gmail.com']
-  s.summary     = 'A Rails engine for quickly adding sms authentication to a Rails app'
-  s.description = 'A Rails engine for quickly adding sms authentication to a Rails app'
+  s.summary     = 'A Rails engine for quickly adding SMS authentication to a Rails API'
+  s.description = 'A Rails engine for quickly adding SMS authentication to a Rails API'
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
