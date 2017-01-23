@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.version     = SmsAuth::VERSION
   s.authors     = ['Andrew Platkin']
   s.email       = ['andrew.platkin@gmail.com']
+  s.homepage    = 'https://github.com/plattyp/sms_auth'
   s.summary     = 'A Rails engine for quickly adding SMS authentication to a Rails API'
   s.description = 'A Rails engine for quickly adding SMS authentication to a Rails API'
   s.license     = 'MIT'
