@@ -55,27 +55,57 @@ RSpec.describe RegistrationService do
 
   describe '#verify_user' do
     it 'calls verification_error if there is something wrong with verification' do
+      service = described_class.new('3125552333', '123456')
+      expect(service.verify_user).to eq [false, 'The information provided does not match. Please try again.', nil, nil, false]
     end
 
     it 'returns false and an specific error message if the token passed in does not match the one stored for the verification' do
+      verification = create(:phone_verification, phone_number: '3125552333')
+      expect(described_class.new(verification.phone_number, '123456').verify_user).to eq [false, 'The verification token provided does not match', nil, nil, false]
     end
 
     it 'returns false, an specific error message, and locks the verification if the token passed in does not match and is now above the maximum login attempts' do
+      verification = create(:phone_verification, :almost_locked, phone_number: '3125552333')
+      expect(verification.locked?).to eq false
+      expect(described_class.new(verification.phone_number, '123456').verify_user).to eq [false, 'This phone number has been temporarily locked due to unsuccessful login attempts. Please try again in a few minutes.']
+      expect(PhoneVerification.find_by_id(verification.id).locked?).to eq true
     end
 
     it 'calls create_and_verify_user if the verification does not already have a user associated' do
+      verification = create(:phone_verification, user_id: nil, phone_number: '3125552333')
+      service = described_class.new(verification.phone_number, verification.verification_token)
+      expect(service).to receive(:create_and_verify_user) { create(:user) }.exactly(1).times
+      service.verify_user
     end
 
     it 'returns the last arguement of true if the verification never had a user, but now one was created' do
+      verification = create(:phone_verification, user_id: nil, phone_number: '3125552333')
+      expect(described_class.new(verification.phone_number, verification.verification_token).verify_user.last).to eq true
     end
 
     it 'returns the last arguement of false if the verification already had a user' do
+      verification = create(:phone_verification, phone_number: '3125552333')
+      expect(described_class.new(verification.phone_number, verification.verification_token).verify_user.last).to eq false
     end
 
     it 'creates an authentication token if the token matches successfully' do
+      verification = create(:phone_verification, phone_number: '3125552333')
+      expect { described_class.new(verification.phone_number, verification.verification_token).verify_user }.to change { AuthenticationToken.where(user_id: verification.user_id).count }.from(0).to(1)
     end
 
     it 'changes the verification token if authenticated successfully' do
+      verification = create(:phone_verification, phone_number: '3125552333')
+      expect { described_class.new(verification.phone_number, verification.verification_token).verify_user }.to change { PhoneVerification.find_by_id(verification.id).verification_token }
+    end
+
+    it 'returns the authentication token' do
+      verification = create(:phone_verification, phone_number: '3125552333')
+      results = described_class.new(verification.phone_number, verification.verification_token).verify_user
+      token = AuthenticationToken.last
+      expect(results[0]).to eq true
+      expect(results[1]).to eq ''
+      expect(results[2]).to eq token.user_id
+      expect(results[3]).to eq token.body
     end
   end
 

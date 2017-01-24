@@ -17,6 +17,10 @@ FactoryGirl.define do
     unlocked_at { Time.now.utc + 60.minutes }
   end
 
+  trait :almost_locked do
+    login_attempts { [Time.now.utc, Time.now.utc] }
+  end
+
   trait :expired do
     expired_at { Time.now.utc - 60.minutes }
   end
