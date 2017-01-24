@@ -10,7 +10,9 @@ This gem currently only supports PostgreSQL and creates 3 tables: `phone_verific
 
 ## Why use this?
 
-This was originally built to support SMS authentication for an API used for a mobile application. If you are interested in adding this type of authentication to your API, this should get you up and running in a few minutes without the need to use a Warden based solution.
+This was originally built to support SMS authentication for an API used for a mobile application. If you are interested in adding this type of authentication to your API, this should get you up and running in a few minutes without the need to use a Warden based solution. It will let you accomplish authentication on a mobile app with a flow similar to below
+
+![blend authentication runthrough](https://cloud.githubusercontent.com/assets/5751986/22234028/7303c3d2-e1ba-11e6-9a64-43cd5e902ca5.gif)
 
 ## Installation
 
