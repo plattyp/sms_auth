@@ -78,8 +78,6 @@ For authenticated controllers, the `current_user` and `current_token` objects ar
 
 Additional configuration options can be added within the initializer (as mentioned above). Here are the additional arguements allowed and what they do.
 
-### Add to initializer
-
 ```ruby
 require 'sms_auth'
 
@@ -116,3 +114,51 @@ When creating a new authentication_token, it will expire in 90 days. The protect
 
 #### limited_recipients (array of strings, defaults to [])
 If you are testing in an environment and would like to limit phone numbers that can authenticate to only specific phone numbers then set this as an array of numbers (e.g. ['3125552333','3123332255']) and only ones that are within this will be allowed to authenticate and receive the text verification code.
+
+## Routes
+
+This will mount 3 routes to your application: `/auth/login`, `/auth/verify`, and `/auth/logout`
+
+#### POST `/auth/login?phone_number=312-555-2333`
+
+This will cleanup the phone number and initiate the sending of the verification token to the SMS device
+
+#### POST `/auth/verify?phone_number=312-555-2333&verification_token=680587`
+
+After the device receives the verification_token, you will post to this endpoint with the phone_number and verification_token received via SMS. If successful, it will return this body:
+
+```json
+{
+  "message": "",
+  "success": true,
+  "authentication_token": "mr-B9xBaHyJABkyR9jgq1FRs7zdZFE4VsFWR_J7y",
+  "user_id": 1,
+  "new_user": false
+}
+```
+Store the `authentication_token` on the device and pass it in as `Authorization` within the header. If not provided on protected routes, it will not allow you to continue. `new_user` is true only if the user was just created on his/her first verification. At this point, you can redirect to pages that would enrich other parts of the `User` model.
+
+#### DELETE `/auth/logout`
+
+All authenticated routes (including logout) will require the `Authorization` added to the header.
+
+### Error Handling
+
+All endpoints will return a HTTP status code of 400 if there is an issue and return a `message` and `success` key within the json body to then be displayed to the Client. 
+
+```json
+{
+  "message": "The verification token used is expired. Please request a new one and try again.",
+  "success": false
+}
+```
+
+If it succeeds, it will return a HTTP status code of 200 and both keys
+```json
+{
+  "message": "",
+  "success": true
+}
+
+```
+
