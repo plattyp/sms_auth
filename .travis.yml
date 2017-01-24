@@ -3,7 +3,7 @@ rvm:
   - 2.3.0
 addons:
   code_climate:
-    repo_token: 39d95ddb7d8450e0ed50b896052d3055831aab1703f69dcb45a87cbb423b495c
+    repo_token: efccd13f218a71e07bc52aec4696ae341ac8a4ef92f60e3505a4bb83ec6cd4fc
 before_script:
   - psql -c "CREATE USER admin WITH PASSWORD 'admin';" -U postgres
   - psql -c "ALTER USER admin CREATEDB;" -U postgres
