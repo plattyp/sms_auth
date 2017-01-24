@@ -72,11 +72,15 @@ class RegistrationService
   end
 
   def verification_error(verification)
-    if verification&.locked?
+    if verification.nil?
+      return verification_error_response('The information provided does not match. Please try again.')
+    end
+
+    if verification.locked?
       return verification_error_response("Login attempts have been locked for this phone number. Try again in #{verification.unlocks_in_minutes} minutes.")
     end
 
-    if verification&.expired?
+    if verification.expired?
       return verification_error_response('The verification token used is expired. Please request a new one and try again.')
     end
 
