@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AuthenticationToken, type: :model do
   describe '.expired_tokens' do
-    before(:all) do
+    before(:each) do
       @user = create(:user)
     end
 
@@ -39,7 +39,7 @@ RSpec.describe AuthenticationToken, type: :model do
   end
 
   describe '.find_user_by_token' do
-    before(:all) do
+    before(:each) do
       @user_one = create(:user)
       @user_two = create(:user)
       @token_user_one = create(:authentication_token, user: @user_one)
@@ -61,12 +61,9 @@ RSpec.describe AuthenticationToken, type: :model do
   end
 
   describe '#generate_token' do
-    before(:all) do
-      @user = create(:user)
-    end
-
     it 'sets the body of the authentication_token before saving it' do
-      auth_token = build(:authentication_token, :without_body, user: @user)
+      user = create(:user)
+      auth_token = build(:authentication_token, :without_body, user: user)
       expect(auth_token.body).to eq nil
       auth_token.save
       body = AuthenticationToken.find_by_id(auth_token.id).body
@@ -75,7 +72,7 @@ RSpec.describe AuthenticationToken, type: :model do
   end
 
   describe '#soft_delete' do
-    before(:all) do
+    before(:each) do
       @user = create(:user)
     end
 

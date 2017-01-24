@@ -72,15 +72,15 @@ class RegistrationService
   end
 
   def verification_error(verification)
-    if verification.nil?
-      error_message = 'The information provided does not match. Please try again.'
-    elsif verification.locked?
-      error_message = "Login attempts have been locked for this phone number. Try again in #{verification.unlocks_in_minutes} minutes."
-    elsif verification.expired?
-      error_message = 'The verification token used is expired. Please request a new one and try again.'
+    if verification&.locked?
+      return verification_error_response("Login attempts have been locked for this phone number. Try again in #{verification.unlocks_in_minutes} minutes.")
     end
 
-    [false, error_message, nil, nil, false]
+    if verification&.expired?
+      return verification_error_response('The verification token used is expired. Please request a new one and try again.')
+    end
+
+    verification_error_response('The information provided does not match. Please try again.')
   end
 
   def append_login_attempt(verification)
@@ -108,5 +108,9 @@ class RegistrationService
 
   def send_out_message_synchronously(phone_num, message)
     TextMessageService.new(phone_num, message).send
+  end
+
+  def verification_error_response(error_message)
+    [false, error_message, nil, nil, false]
   end
 end
