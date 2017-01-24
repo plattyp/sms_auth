@@ -9,6 +9,10 @@ FactoryGirl.define do
     association :user, factory: :user
   end
 
+  trait :unverified do
+    verified_at nil
+  end
+
   trait :locked do
     unlocked_at { Time.now.utc + 60.minutes }
   end
