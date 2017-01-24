@@ -1,4 +1,4 @@
-# SMS Auth [![Build Status](https://travis-ci.org/plattyp/sms_auth.svg?branch=master)](https://travis-ci.org/plattyp/sms_auth) [![Code Climate](https://codeclimate.com/github/plattyp/sms_auth/badges/gpa.svg)](https://codeclimate.com/github/plattyp/sms_auth) [![Test Coverage](https://codeclimate.com/github/plattyp/sms_auth/badges/coverage.svg)](https://codeclimate.com/github/plattyp/sms_auth/coverage)
+# SMS Auth [![Build Status](https://travis-ci.org/plattyp/sms_auth.svg?branch=master)](https://travis-ci.org/plattyp/sms_auth) [![Code Climate](https://codeclimate.com/github/plattyp/sms_auth/badges/gpa.svg)](https://codeclimate.com/github/plattyp/sms_auth) [![Test Coverage](https://codeclimate.com/github/plattyp/sms_auth/badges/coverage.svg)](https://codeclimate.com/github/plattyp/sms_auth/coverage) [![Gem Version](https://badge.fury.io/rb/sms_auth.svg)](https://badge.fury.io/rb/sms_auth)
 
 A Rails engine for quickly adding SMS authentication to a Rails API.
 
