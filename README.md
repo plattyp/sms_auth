@@ -1,4 +1,4 @@
-# SMS Auth [![Build Status](https://travis-ci.org/plattyp/sms_auth.svg?branch=master)](https://travis-ci.org/plattyp/sms_auth) [![Code Climate](https://codeclimate.com/github/plattyp/sms_auth/badges/gpa.svg)](https://codeclimate.com/github/plattyp/sms_auth)
+# SMS Auth [![Build Status](https://travis-ci.org/plattyp/sms_auth.svg?branch=master)](https://travis-ci.org/plattyp/sms_auth) [![Code Climate](https://codeclimate.com/github/plattyp/sms_auth/badges/gpa.svg)](https://codeclimate.com/github/plattyp/sms_auth) [![Test Coverage](https://codeclimate.com/github/plattyp/sms_auth/badges/coverage.svg)](https://codeclimate.com/github/plattyp/sms_auth/coverage)
 
 A Rails engine for quickly adding SMS authentication to a Rails API.
 
@@ -32,7 +32,7 @@ This was originally built to support SMS authentication for an API used for a mo
 
 ### Configure the gem
 
-Create an initializer called `config/initializers/sms_auth.rb` and set it up with your [Twilio](https://www.twilio.com) account information
+Create an initializer called `config/initializers/sms_auth.rb` and set it up with your [Twilio](https://www.twilio.com) account information. You will need to purchase a phone number that can send text messages to use as your from.
 
 ```ruby
 require 'sms_auth'
@@ -40,7 +40,7 @@ require 'sms_auth'
 SmsAuth::Engine.setup do |config|
   config.twilio_auth_token = 'AUTH TOKEN HERE'
   config.twilio_account_sid = 'ACCOUNT SID HERE'
-  config.twilio_from_number = '+13122486863'
+  config.twilio_from_number = 'FROM_PHONE_NUMBER'
 end
 
 ```
@@ -76,4 +76,43 @@ For authenticated controllers, the `current_user` and `current_token` objects ar
 
 ## Configurable Options
 
-More info coming soon
+Additional configuration options can be added within the initializer (as mentioned above). Here are the additional arguements allowed and what they do.
+
+### Add to initializer
+
+```ruby
+require 'sms_auth'
+
+SmsAuth::Engine.setup do |config|
+  config.twilio_auth_token = 'AUTH TOKEN HERE'
+  config.twilio_account_sid = 'ACCOUNT SID HERE'
+  config.twilio_from_number = 'FROM_PHONE_NUMBER'
+  config.max_login_attempts = 5
+  config.max_login_attempt_within_minutes = 60
+end
+
+```
+
+#### message_prefix (string)
+It will append a prefix to SMS texts being sent out (e.g. if it is set to "Onboarding App", then the user would receive "Onboarding App: Your verification code is 123456"
+
+#### token_length (int, defaults to 6)
+It will set the token length that is sent to user to be a code that is N length.
+
+#### max_login_attempts (int, defaults to 3)
+Number of attempts allowed in the allotted time frame before the account is temporarily locked.
+
+#### max_login_attempt_within_minutes (int, defaults to 15)
+Is used to determine how many login attempts to consider when looking at recent tries. If a user tried to login 3 times in the last 15 minutes, then their account would be locked. If you set this number to 60, then it would be locked if they tried 3 unsuccessful times in the last 60 minutes.
+
+#### verification_token_time_limit_minutes (int, defaults to 5)
+If a token is sent out to a user and they wait longer than N minutes to verify it, then it will make them request another
+
+#### lock_min_duration (int, defaults to 60)
+If a user unsuccessfully verifies their token the maximum number of times within the allotted `max_login_attempt_within_minutes` then it will lock their account for N minutes.
+
+#### default_token_expiration_days (int, defaults to 90)
+When creating a new authentication_token, it will expire in 90 days. The protected endpoints will return a 401 if the token expired, so that you can then try to request a new one.
+
+#### limited_recipients (array of strings, defaults to [])
+If you are testing in an environment and would like to limit phone numbers that can authenticate to only specific phone numbers then set this as an array of numbers (e.g. ['3125552333','3123332255']) and only ones that are within this will be allowed to authenticate and receive the text verification code.
